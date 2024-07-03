@@ -12,26 +12,26 @@ def mock_send_messages(messages):
     ]
     for response in fake_responses:
         yield response
-        time.sleep(2)
+        time.sleep(1)
 
 app = Flask(__name__)
 
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
     if request.method == 'POST':
-        # messages = request.json['messages']
-        messages = 'aaa'
+        messages = request.json['messages']
+        print(messages)
         print("start")
 
         def event_stream():
             for line in mock_send_messages(messages=messages):
                 text = line['choices'][0]['delta'].get('content', '')
-                if len(text): 
+                if len(text):
                     yield text
 
         return Response(event_stream(), mimetype='text/event-stream')
     else:
-        return stream_template("")
+        return stream_template("./chat.html")
 
 if __name__ == '__main__':
     app.run()
