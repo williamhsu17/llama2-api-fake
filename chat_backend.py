@@ -1,7 +1,5 @@
 from flask import Flask, stream_template, request, Response
-import openai
-import os
-import time
+from utils.utils import query_engine
 
 def mock_send_messages(messages):
     fake_responses = [
@@ -24,10 +22,10 @@ def chat():
         print("start")
 
         def event_stream():
-            for line in mock_send_messages(messages=messages):
-                text = line['choices'][0]['delta'].get('content', '')
-                if len(text):
-                    yield text
+            streaming_response = query_engine.query(messages)
+            for r in streaming_response.response_gen:
+                if r is not None:
+                    yield r
 
         return Response(event_stream(), mimetype='text/event-stream')
     else:
