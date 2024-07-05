@@ -9,4 +9,4 @@ def predict(message, history):
             partial_message = partial_message + r
             yield partial_message
 
-gr.ChatInterface(predict).launch()
+gr.ChatInterface(predict).launch(server_name="192.168.0.154", server_port=7860)
